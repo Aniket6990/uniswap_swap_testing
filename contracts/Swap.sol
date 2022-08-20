@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity >=0.7.6;
-pragma abicoder v2;
 
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract Swap {
     ISwapRouter public constant swapRouter =
         ISwapRouter(0xE592427A0AEce92De3Edee1F18E0157C05861564);
 
-    address public constant DAI = 0x31F42841c2db5173425b5223809CF3A38FEde360;
-    address public constant WETH9 = 0xc778417E063141139Fce010982780140Aa0cD5Ab;
-    address public constant USDC = 0x07865c6E87B9F70255377e024ace6630C1Eaa37F;
+    address public constant DAI = 0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063;
+    address public constant WMATIC = 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270;
+    // address public constant USDC = 0x07865c6E87B9F70255377e024ace6630C1Eaa37F;
 
     uint24 public constant poolFee = 3000;
 
@@ -20,15 +20,15 @@ contract Swap {
         returns (uint256 amountOut)
     {
         TransferHelper.safeTransferFrom(
-            WETH9,
+            WMATIC,
             msg.sender,
             address(this),
             amountIn
         );
-        TransferHelper.safeApprove(WETH9, address(swapRouter), amountIn);
+        TransferHelper.safeApprove(WMATIC, address(swapRouter), amountIn);
         ISwapRouter.ExactInputSingleParams memory params = ISwapRouter
             .ExactInputSingleParams({
-                tokenIn: WETH9,
+                tokenIn: WMATIC,
                 tokenOut: DAI,
                 fee: poolFee,
                 recipient: msg.sender,
@@ -58,7 +58,7 @@ contract Swap {
         ISwapRouter.ExactOutputSingleParams memory params = ISwapRouter
             .ExactOutputSingleParams({
                 tokenIn: DAI,
-                tokenOut: WETH9,
+                tokenOut: WMATIC,
                 fee: poolFee,
                 recipient: msg.sender,
                 deadline: block.timestamp,
